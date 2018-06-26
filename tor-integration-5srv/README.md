@@ -31,7 +31,33 @@ $subnet_mgmt = "192.168.100"
 $subnet_ctrl_data= "172.16.1"
 ```
 
+### How to use Foxy Proxy for GUI access
+
+Follow these steps for GUI access via FoxyProxy.
+1- Open FireFox and open https://addons.mozilla.org/en-US/firefox/ URL.
+2- Search for FoxyProxy and select "FoxyProxy Standard"
+3- Click on "Add to Firefox"
+
+
+![Web Console](/images/FoxyProxy-Install.png)
+
+Now open ssh port forwading session to physical server using port 1080. please change IP as per your host config
+
+```bash
+your-laptop> ssh root@<< physical server ip>> -D 1080
+```
+
+Configure FireFox FoxyProxy add-on by configuring "127.0.0.1" & port 1080 as Scoks4 as captured in screenshot. 
+
+![Web Console](/images/FoxyProxy-Configure.png)
+
+Now enable FoxyProxy add-on by selecting the profile created earlier and open Contrail GUI using IP address of Vagrant VM https://192.168.100.11:8143
+
+![Web Console](/images/FoxyProxy-Contrail-GUI-k8s.png)
+.
+
 ### References
 
 * <https://github.com/Juniper/contrail-ansible-deployer/wiki>
 * <https://github.com/Juniper/vqfx10k-vagrant>
+
