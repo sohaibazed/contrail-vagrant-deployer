@@ -1,0 +1,68 @@
+VAGRANTFILE_API_VERSION = "2"
+
+# Require YAML module
+require 'yaml'
+
+# Read YAML file with box details
+servers = YAML.load_file('servers.yaml')
+
+$script = <<-SCRIPT
+sudo route add -net 172.16.0.0 netmask 255.255.0.0 gw 172.16.1.1
+tar -zxvf /home/vagrant/contrail-ansible-deployer-5.0.0-0.40.tgz
+cp /home/vagrant/instances.yaml /home/vagrant/contrail-ansible-deployer/config/instances.yaml
+cd /home/vagrant/contrail-ansible-deployer
+ansible-playbook -i inventory/ -e orchestrator=openstack playbooks/configure_instances.yml
+ansible-playbook -i inventory/ -e orchestrator=openstack playbooks/install_contrail.yml
+SCRIPT
+
+# Create boxes
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "config.yaml"
+    ansible.verbose = true
+  end
+
+if Vagrant.has_plugin?("vagrant-timezone")
+     config.timezone.value="America/New_York"
+  end
+
+  # Iterate through entries in YAML file
+  servers.each do |servers|
+    config.vm.define servers["name"] do |srv|
+      srv.vm.box = servers["box"]
+      srv.vm.network "public_network", bridge: "br2", ip: servers["ip"]
+      srv.vm.provision "shell", path: "scripts/enable_root_login.sh"
+      srv.vm.provision "shell", path: "scripts/set-centos-gw.sh"
+      srv.vm.provision "shell", path: "scripts/ntp.sh" 
+      srv.vm.provision "file", source: "instances.yaml", destination: "/home/vagrant/instances.yaml"
+      srv.vm.hostname = servers ["name"]
+      srv.vm.provider :virtualbox do |vb|
+        vb.name = servers["name"]
+        vb.memory = servers["ram"]
+        if servers.has_key?("cpus")
+          vb.cpus = servers["cpus"]
+          vb.customize ["setextradata", :id, "VBoxInternal/CPUM/SSE4.1", "1"]
+          vb.customize ["setextradata", :id, "VBoxInternal/CPUM/SSE4.2", "1"]
+          vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
+          end
+        end
+      end
+  end
+  config.vm.define "provision-os-k8" do |p|
+            p.vm.box = "qarham/CentOS7.5-350GB"
+            p.vm.hostname = "provision"
+            p.vm.network "public_network", bridge: "br2", ip: "192.168.101.15"
+            p.ssh.insert_key = true
+            p.vm.provision "shell", path: "scripts/enable_root_login.sh"
+            p.vm.provision "shell", path: "scripts/set-centos-gw.sh"
+            p.vm.provision "shell", path: "scripts/ntp.sh"
+            p.vm.provision "file", source: "instances.yaml", destination: "/home/vagrant/instances.yaml"
+            p.vm.provision "file", source: "contrail-ansible-deployer-5.0.0-0.40.tgz", destination: "/home/vagrant/contrail-ansible-deployer-5.0.0-0.40.tgz"
+            #p.vm.provision "shell",
+            #   inline: $script
+        config.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "1"]
+        end
+    end
+end
