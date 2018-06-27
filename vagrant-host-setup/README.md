@@ -7,8 +7,8 @@ This repo provide instructions and scripts setting up BMS host machine for Vagra
 Install CentOS 7.5 on the BMS host and following below steps:
 
 ```bash
-host> git clone https://github.com/qarham/vagrant-host-setup.git
-host> cd vagrant-host-setup
+host> git clone https://gitlab.com/sohaibazed/contrail-vagrant-deployer.git
+host> cd contrail-vagrant-deployer/vagrant-host-setup
 host> ./setup_vagrant_centos.sh
 ```
 Note: "setup_vagrant_centos.sh" script will take care of installtion of VirtualBox 5.2, Vagrant, Ansible and JunOS python & ansible modules.
@@ -21,18 +21,18 @@ In case you would also like setting up bridge interfaces for the Host please use
 cat /etc/sysconfig/network-scripts/ifcfg-br0
 DEVICE=br0
 BOOTPROTO=static
-IPADDR=10.87.65.30
-NETMASK=255.255.255.128
-GATEWAY=10.87.65.126
-DNS1=172.21.200.60
+IPADDR=10.13.132.65
+NETMASK=255.255.254.0
+GATEWAY=10.13.132.1
+DNS1=8.8.8.8
 ONBOOT=yes
 TYPE=Bridge
 NM_CONTROLLED=no
 
-cat /etc/sysconfig/network-scripts/ifcfg-ens2f1
+cat /etc/sysconfig/network-scripts/ifcfg-eno0
 NM_CONTROLLED=no
 BOOTPROTO=none
-DEVICE=ens2f1
+DEVICE=eno0
 TYPE=Ethernet
 ONBOOT=yes
 BRIDGE=br0
@@ -44,16 +44,16 @@ BRIDGE=br0
 cat /etc/sysconfig/network-scripts/ifcfg-br1
 DEVICE=br1
 BOOTPROTO=static
-IPADDR=192.168.1.30
+IPADDR=192.168.100.10
 NETMASK=255.255.255.0
 ONBOOT=yes
 TYPE=Bridge
 NM_CONTROLLED=no
 
-cat /etc/sysconfig/network-scripts/ifcfg-ens2f0
+cat /etc/sysconfig/network-scripts/ifcfg-en1
 NM_CONTROLLED=no
 BOOTPROTO=none
-DEVICE=ens2f0
+DEVICE=eno1
 TYPE=Ethernet
 ONBOOT=yes
 BRIDGE=br1
