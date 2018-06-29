@@ -6,9 +6,10 @@ require 'yaml'
 # Read YAML file with box details
 servers = YAML.load_file('servers.yaml')
 
+contrail_package_name="contrail-ansible-deployer-5.0.0-0.40.tgz"
 $script = <<-SCRIPT
 sudo route add -net 172.16.0.0 netmask 255.255.0.0 gw 172.16.1.1
-tar -zxvf /home/vagrant/contrail-ansible-deployer-5.0.0-0.40.tgz
+tar -zxvf #{contrail_package_name}
 cp /home/vagrant/instances.yaml /home/vagrant/contrail-ansible-deployer/config/instances.yaml
 cd /home/vagrant/contrail-ansible-deployer
 ansible-playbook -i inventory/ -e orchestrator=openstack playbooks/configure_instances.yml
@@ -35,7 +36,6 @@ if Vagrant.has_plugin?("vagrant-timezone")
       srv.vm.provision "shell", path: "scripts/enable_root_login.sh"
       srv.vm.provision "shell", path: "scripts/set-centos-gw.sh"
       srv.vm.provision "shell", path: "scripts/ntp.sh" 
-      srv.vm.provision "file", source: "instances.yaml", destination: "/home/vagrant/instances.yaml"
       srv.vm.hostname = servers ["name"]
       srv.vm.provider :virtualbox do |vb|
         vb.name = servers["name"]
@@ -58,9 +58,9 @@ if Vagrant.has_plugin?("vagrant-timezone")
             p.vm.provision "shell", path: "scripts/set-centos-gw.sh"
             p.vm.provision "shell", path: "scripts/ntp.sh"
             p.vm.provision "file", source: "instances.yaml", destination: "/home/vagrant/instances.yaml"
-            p.vm.provision "file", source: "contrail-ansible-deployer-5.0.0-0.40.tgz", destination: "/home/vagrant/contrail-ansible-deployer-5.0.0-0.40.tgz"
-            #p.vm.provision "shell",
-            #   inline: $script
+            p.vm.provision "file", source: "../packages/#{contrail_package_name}", destination: "/home/vagrant/#{contrail_package_name}"
+            p.vm.provision "shell",
+               inline: $script
         config.vm.provider :virtualbox do |vb|
             vb.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "1"]
         end
