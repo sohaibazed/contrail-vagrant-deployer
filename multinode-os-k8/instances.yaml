@@ -36,15 +36,10 @@ instances:
       openstack_compute:
       vrouter:
 global_configuration:
-#  CONTAINER_REGISTRY: hub.juniper.net/contrail
-#  CONTAINER_REGISTRY_USERNAME: username
-#  CONTAINER_REGISTRY_PASSWORD: password
   CONTAINER_REGISTRY: opencontrailnightly
 contrail_configuration:
   UPGRADE_KERNEL: true
-#  CONTRAIL_VERSION: latest          #Comment "5.0-XY" and uncomment this line for DockerHub opencontrailnightly 
-#  CONTRAIL_VERSION: 5.0.0-0.40      #Comment "5.0-XY" and uncomment this line for GA hub.juniper.net
-  CONTRAIL_VERSION: ocata-5.0-40  
+  CONTRAIL_VERSION: latest          #Comment "5.0-XY" and uncomment this line for DockerHub opencontrailnightly 
   RABBITMQ_NODE_PORT: 5673
   CLOUD_ORCHESTRATOR: openstack
   METADATA_PROXY_SECRET: contrail123
