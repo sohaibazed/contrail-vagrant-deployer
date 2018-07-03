@@ -1,0 +1,36 @@
+provider_config:
+  bms:
+    ssh_pwd: Juniper123
+    ssh_user: root
+    ntpserver: pool.ntp.org
+    domainsuffix: local
+instances:
+  bms1:
+   provider: bms
+   roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      vrouter:
+      kubemanager:
+      k8s_master:
+      k8s_node:
+   ip: 192.168.101.105
+
+global_configuration:
+  CONTAINER_REGISTRY: opencontrailnightly
+
+contrail_configuration:
+  KUBERNETES_PUBLIC_FIP_POOL: {'project': 'default', 'domain': 'default-domain', 'name': '__fip_pool_public__', 'network': '__public__'}
+  EXTERNAL_ROUTERS: mx1:10.10.20.20,mx2:40.40.30.20
+  CLOUD_ORCHESTRATOR: kubernetes
+  #UPGRADE_KERNEL: true
+  CONTRAIL_VERSION: latest          #Comment "5.0-XY" and uncomment this line for DockerHub opencontrailnightly 
+  CONFIG_NODEMGR__DEFAULTS__minimum_diskGB: 2 
+  DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 2
+  VROUTER_GATEWAY: 192.168.101.1
+  PHYSICAL_INTERFACE: eth1
+  KUBERNETES_CLUSTER_PROJECT: {}
