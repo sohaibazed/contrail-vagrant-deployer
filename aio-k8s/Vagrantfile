@@ -1,0 +1,24 @@
+VAGRANTFILE_API_VERSION = "2"
+
+contrail_package_name="contrail-ansible-deployer-5.0.0-0.40.tgz"
+$script = <<-SCRIPT
+tar -zxvf #{contrail_package_name}
+cp /home/vagrant/instances.yaml /home/vagrant/contrail-ansible-deployer/config/instances.yaml
+cd /home/vagrant/contrail-ansible-deployer
+ansible-playbook -i inventory/ -e orchestrator=kubernetes playbooks/configure_instances.yml
+ansible-playbook -i inventory/ -e orchestrator=kubernetes playbooks/install_contrail.yml
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "qarham/CentOS7.5-350GB"
+  config.vm.provision "shell", path: "scripts/enable_root_login.sh"
+  config.vm.provision "shell", path: "scripts/ntp.sh"
+  config.vm.provision "file", source: "instances.yaml", destination: "/home/vagrant/instances.yaml"
+  config.vm.provision "file", source: "../packages/#{contrail_package_name}", destination: "/home/vagrant/#{contrail_package_name}"
+  config.vm.network "public_network", bridge: "br2", ip: "192.168.101.105"
+  config.vm.provision "shell",
+     inline: $script
+  config.vm.provider :virtualbox do |vb|
+     vb.customize ["modifyvm", :id, "--memory", "32768", "--cpus", "4"]
+  end
+end
