@@ -52,7 +52,7 @@ if Vagrant.has_plugin?("vagrant-timezone")
   config.vm.define "provision-os-k8" do |p|
             p.vm.box = "qarham/CentOS7.5-350GB"
             p.vm.hostname = "provision"
-            p.vm.network "public_network", bridge: "br2", ip: "192.168.101.15"
+            p.vm.network "public_network", bridge: "br2", ip: "192.168.101.14"
             p.ssh.insert_key = true
             p.vm.provision "shell", path: "scripts/enable_root_login.sh"
             p.vm.provision "shell", path: "scripts/set-centos-gw.sh"
