@@ -18,7 +18,7 @@ instances:
       kubemanager:
       k8s_master:
       k8s_node:
-   ip: 192.168.101.105
+   ip: 192.168.101.15
 
 global_configuration:
   CONTAINER_REGISTRY: opencontrailnightly
