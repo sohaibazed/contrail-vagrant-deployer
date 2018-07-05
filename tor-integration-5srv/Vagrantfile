@@ -89,7 +89,7 @@ $subnet_ctrl_data= "172.16.1"
             p.vm.provision "shell", path: "scripts/set-centos-gw.sh"
             p.vm.provision "shell", path: "scripts/ntp.sh"
             p.vm.provision "file", source: "instances.yaml", destination: "/home/vagrant/instances.yaml"
-            p.vm.provision "file", source: "contrail-ansible-deployer-5.0.0-0.40.tgz", destination: "/home/vagrant/contrail-ansible-deployer-5.0.0-0.40.tgz"
+            p.vm.provision "file", source: "../packages/contrail-ansible-deployer-5.0.0-0.40.tgz", destination: "/home/vagrant/contrail-ansible-deployer-5.0.0-0.40.tgz"
             p.vm.provision "shell",
                inline: $script
         config.vm.provider :virtualbox do |vb|
