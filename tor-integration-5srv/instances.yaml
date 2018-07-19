@@ -43,7 +43,7 @@ instances:
         TSN_EVPN_MODE: true
         VROUTER_GATEWAY: 172.16.1.1
 contrail_configuration:
-  CONTRAIL_VERSION: latest
+  CONTRAIL_VERSION: ocata-5.0-129
   CLOUD_ORCHESTRATOR: openstack
   RABBITMQ_NODE_PORT: 5673
   VROUTER_GATEWAY: 172.16.1.1
@@ -55,6 +55,7 @@ contrail_configuration:
   CONTROL_NODES: 192.168.100.11
   CONFIG_NODEMGR__DEFAULTS__minimum_diskGB: 100
   DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 100
+  TSN_NODES: 172.16.1.104
 kolla_config:
   customize:
     nova.conf: |
